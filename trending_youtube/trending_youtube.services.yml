@@ -1,0 +1,4 @@
+services:
+  trending_youtube.search:
+    class: Drupal\trending_youtube\search
+    arguments: []

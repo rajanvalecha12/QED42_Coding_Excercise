@@ -66,60 +66,12 @@ class VideoImportForm extends FormBase {
           'name' => $value,
     ]);
 $term->save();
-
-$DEVELOPER_KEY = 'AIzaSyBDTxs1WETa-rCXNcUyTJaw4ReR0c8l-T8';
-
-  $client = new Google_Client();
-  $client->setDeveloperKey($DEVELOPER_KEY);
-
-  // Define an object that will be used to make all API requests.
-  $youtube = new Google_Service_YouTube($client);
-
-  $htmlBody = '';
-  
-
-    // Call the search.list method to retrieve results matching the specified
-    // query term.
-    $searchResponse = $youtube->search->listSearch('id,snippet', array(
-      'q' => $value,
-      'maxResults' => 20,
-    ));
-
-    $videos = '';
-    $channels = '';
-    $playlists = '';
-
-    // Add each result to the appropriate list, and then display the lists of
-    // matching videos, channels, and playlists.
-    foreach ($searchResponse['items'] as $searchResult) {
-      switch ($searchResult['id']['kind']) {
-        case 'youtube#video':
-          $videos .= sprintf('<li>%s (%s)</li>',
-              $searchResult['snippet']['title'], $searchResult['id']['videoId']);
-          break;
-        case 'youtube#channel':
-          $channels .= sprintf('<li>%s (%s)</li>',
-              $searchResult['snippet']['title'], $searchResult['id']['channelId']);
-          break;
-        case 'youtube#playlist':
-          $playlists .= sprintf('<li>%s (%s)</li>',
-              $searchResult['snippet']['title'], $searchResult['id']['playlistId']);
-          break;
-      }
-    }
-
-   print_r($videos);die('lklk');
+$search = \Drupal::service('trending_youtube.search');
+$search->searchKeyword($value);
 
 
-//    $user = \Drupal\user\Entity\User::load(\Drupal::currentUser()->id());
-//    db_insert('rsvplist')
-//      ->fields(array(
-//        'mail' => $form_state->getValue('email'),
-//        'nid' => $form_state->getValue('nid'),
-//        'uid' => $user->id(),
-//        'created' => time(),
-//       ))
-//      ->execute();
-//    drupal_set_message(t('Thank you for your RSVP, you are on the list for the event.'));
+
+//   print_r($videos);die('lklk');
+
   }
 }
