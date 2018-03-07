@@ -1,0 +1,5 @@
+administer trending_youtube:
+  title: 'Import Youtube Videos to the site'
+  description: 'Access the import videos using keywords page'
+  restrict access: true
+

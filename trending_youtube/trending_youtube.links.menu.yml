@@ -1,0 +1,8 @@
+trending_youtube.form:
+  title: 'Import Youtube Videos'
+  description: 'Import Videos from Youtube based on keyword'
+  route_name: trending_youtube.form
+  parent: system.admin_config_content
+  weight: 10
+  
+  

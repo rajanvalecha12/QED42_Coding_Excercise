@@ -1,0 +1,7 @@
+trending_youtube.form:
+  path: '/trending'
+  defaults:
+    _form: '\Drupal\trending_youtube\Form\VideoImportForm'
+    _title: 'Import Videos from Youtube based on keyword'
+  requirements:
+    _permission: 'administer trending_youtube'

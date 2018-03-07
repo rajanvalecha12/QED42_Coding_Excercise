@@ -1,0 +1,6 @@
+name: Trending Youtube Videos
+description: Allows admin to import videos for a specific keyword.
+package: Custom
+type: module
+version: 1.0
+core: 8.x
