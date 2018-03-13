@@ -1,10 +1,5 @@
 <?php
-//use Drupal\node\Entity\Node;
-////function trending_youtube_entity_load(){
-//$node = \Drupal::routeMatch()->getParameter('node');
-//$node = node_load()
-//kint($node);die('lla');
-////}
+
 use Drupal\node\Entity\Node;
 
 function my_function_1($videos,$tid,&$context){
