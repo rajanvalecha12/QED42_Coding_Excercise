@@ -1,0 +1,62 @@
+<?php
+//use Drupal\node\Entity\Node;
+////function trending_youtube_entity_load(){
+//$node = \Drupal::routeMatch()->getParameter('node');
+//$node = node_load()
+//kint($node);die('lla');
+////}
+use Drupal\node\Entity\Node;
+
+function my_function_1($videos,$tid,&$context){
+      if (!isset($context['sandbox']['progress'])) {
+    //initialize the batch progress
+    $context['sandbox']['progress'] = 0;
+    //set the max to the total number of records selected by the query
+    $context['sandbox']['max'] = count($videos['url']);
+    //store my results in a variable
+    $context['sandbox']['url'] = $videos['url'];
+    $context['sandbox']['title'] = $videos['title'];
+  }
+  
+  //sets the limit to the lesser of 10 or remaining nodes
+  $limit = min(10, count($context['sandbox']['url']));
+
+  //for loop to process this chunk of the batch
+  for ($i = 0; $i < $limit; $i++) {
+      $current_url = array_shift($context['sandbox']['url']);
+      $current_title = array_shift($context['sandbox']['title']);
+        //create nodes of content type youtube video programmatically
+        $node = Node::create([
+  'type'        => 'youtube_videos',
+  'title'       => $current_title,
+  'field_tag' => array(
+      'target_id' => $tid,
+  ), 
+   'field_trending_video' => array(
+       'input' => 'https://www.youtube.com/watch?v='.$current_url,
+       'video_id' => $current_url,
+   ),
+]);
+$node->save();
+$context['results'][] = 'Successfully imported ' . $current_title;
+    // Optional message displayed under the progressbar.
+    $context['message'] = t('Processing record @title', array('@title' => $current_title));
+
+    //increment our progress
+    $context['sandbox']['progress'] ++;
+        
+    }
+    //check if batch is finished and update progress
+  if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
+    $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
+  }
+  }
+function my_finished_callback($success, $results, $operations){
+  if ($success) {
+    $message = t('The batch import was successful');
+    drupal_set_message(t('@count records  processed.', array('@count' => count($results))));
+  }
+  else {
+    drupal_set_message(t('An error occurred and processing did not complete.'), 'error');
+  }
+}

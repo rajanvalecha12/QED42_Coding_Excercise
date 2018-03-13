@@ -1,0 +1,18 @@
+uuid: 508daa01-61fc-4ad3-b1a3-f4ecd41df232
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - node.type.youtube_videos
+  module:
+    - user
+id: node.youtube_videos.teaser
+targetEntityType: node
+bundle: youtube_videos
+mode: teaser
+content:
+  links:
+    weight: 100
+    region: content
+hidden: {  }

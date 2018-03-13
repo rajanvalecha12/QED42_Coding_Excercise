@@ -1,0 +1,21 @@
+uuid: 7caaf086-01e3-4989-a797-1e87e6efc8b8
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_trending_video
+    - node.type.youtube_videos
+  module:
+    - youtube
+id: node.youtube_videos.field_trending_video
+field_name: field_trending_video
+entity_type: node
+bundle: youtube_videos
+label: 'Trending Video'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: youtube

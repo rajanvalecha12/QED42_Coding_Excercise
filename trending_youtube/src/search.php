@@ -6,8 +6,10 @@
 
 namespace Drupal\trending_youtube;
 
-use Drupal\Core\Database\Database;
-
+use \Drupal\node\Entity\Node;
+use Drupal\taxonomy\TermStorage;
+use Google_Client;
+use Google_Service_YouTube;
 /**
  * Defines a service for managing RSVP list enabled for nodes.
  */
@@ -24,7 +26,11 @@ class search {
    *
    * @param \Drupal\node\Entity\Node $node
    */
+  
   public function searchKeyword($keyword) {
+//    require_once DRUPAL_ROOT.'/l'vendor/autoload.php';
+//  require_once ($_SERVER["DRUPAL_ROOT"].'/librarires/google-api-php-client/src/Google_Client.php');
+//  require_once ($_SERVER["DRUPAL_ROOT"].'/libraries/google-api-php-client/src/contrib/Google_YouTubeService.php');
     $DEVELOPER_KEY = 'AIzaSyBDTxs1WETa-rCXNcUyTJaw4ReR0c8l-T8';
 
   $client = new Google_Client();
@@ -39,10 +45,10 @@ class search {
     // Call the search.list method to retrieve results matching the specified
     // query term.
     $searchResponse = $youtube->search->listSearch('id,snippet', array(
-      'q' => $value,
-      'maxResults' => 20,
+      'q' => $keyword,
+      'maxResults' => 100,
     ));
-
+//echo "Keyword=";print_r($keyword);echo "\n search response =";print_r($searchResponse);die('mam');
     $videos = '';
 
     // Add each result to the appropriate list, and then display the lists of
@@ -51,24 +57,42 @@ class search {
     foreach ($searchResponse['items'] as $searchResult) {
       switch ($searchResult['id']['kind']) {
         case 'youtube#video':
-          $videos['url'][] = $searchResult['snippet']['url'];
-          $videos['tag'][] = $searchResult['snippet']['keyword'];
-          break;
+          $videos['url'][] = $searchResult['id']['videoId'];
+          $videos['title'][] = $searchResult['snippet']['title'];
+        break;
       }
     }
-    foreach($videos['url'] as $key => $video){
-        //create nodes of content type youtube video programmatically
-        $data = array(
-  'type' => 'youtube_videos', 
-  'tag' => $videos['tag'][$key], 
-   'field_training_video' => $video
-);
-$node = Drupal::entityManager()
-  ->getStorage('node')
-  ->create($data);
-$node->save();
-        
+//    print_r($videos);die('hey');
+    
+    $terms = \Drupal::service('entity_type.manager')
+->getStorage("taxonomy_term")
+->loadTree('tags');
+    
+    foreach($terms as $term){
+        if($term->name == $keyword){
+            $tid = $term->tid;
+            break;
+        }
     }
+//    kint($tid);die('haha');
+    $batch = array(
+  'title' => t('Importing Videos from youtube'),
+  'operations' => array(
+    array(
+      'my_function_1',
+      array(
+        $videos,
+        $tid,
+      ),
+    ),
+  ),
+  'finished' => 'my_finished_callback',
+//  'file' => drupal_get_path('module', 'trending_youtube') . '/src/search.php',
+
+);
+batch_set($batch);
+//batch_process('admin/content');
+    
   }
 
 
